@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lido Le Capannine — Pannello Gestione</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- LOGIN PAGE -->
+  <div class="admin-login-bg" id="loginPage">
+    <div class="admin-login-card">
+      <img src="images/lido-logo-circle.png" alt="Logo" class="admin-logo" />
+      <div class="admin-title">Le Capannine</div>
+      <div class="admin-subtitle">Gestione Ordini</div>
+      <div class="admin-field">
+        <label>USERNAME</label>
+        <input type="text" class="admin-input" id="loginUser" placeholder="admin" autocomplete="username" />
+      </div>
+      <div class="admin-field">
+        <label>PASSWORD</label>
+        <div style="position:relative;">
+          <input type="password" class="admin-input" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+          <button onclick="togglePwd()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:18px;">👁</button>
+        </div>
+      </div>
+      <div class="admin-error" id="loginError">Credenziali non valide</div>
+      <button class="btn-admin-login" onclick="doLogin()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Accedi
+      </button>
+      <div class="admin-note">Accesso riservato al personale del lido</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="admin-dashboard" id="dashboardPage">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="images/lido-logo-circle.png" alt="Logo" style="width:32px;height:32px;border-radius:50%;" />
+        <span class="admin-topbar-title">Le Capannine — Gestione</span>
+      </div>
+      <button class="admin-logout-btn" onclick="doLogout()">Esci</button>
+    </div>
+
+    <div class="admin-content">
+      <!-- Stats -->
+      <div class="admin-stats" id="adminStats"></div>
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button class="cat-btn active" id="tabOrders" onclick="showTab('orders')">📋 Ordini</button>
+        <button class="cat-btn" id="tabProducts" onclick="showTab('products')">🍽️ Prodotti</button>
+      </div>
+
+      <!-- Orders Tab -->
+      <div id="tabOrdersContent">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div class="admin-section-title">Ordini ricevuti</div>
+          <button onclick="clearOrders()" style="background:none;border:1px solid #ddd;border-radius:8px;padding:5px 12px;font-family:'Sora',sans-serif;font-size:12px;cursor:pointer;color:#888;">Svuota</button>
+        </div>
+        <div id="ordersList"></div>
+      </div>
+
+      <!-- Products Tab -->
+      <div id="tabProductsContent" style="display:none;">
+        <div class="admin-section-title">Prodotti del menu</div>
+        <div id="productsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
