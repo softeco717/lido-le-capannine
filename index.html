@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lido Le Capannine — Ordina dal tuo posto</title>
+  <meta name="description" content="Ordina dal tuo ombrellone o tavolo al Lido Le Capannine" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="images/lido-logo-circle.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Language switcher -->
+  <div class="lang-switcher" id="langSwitcher">
+    <button class="lang-btn active" onclick="setLang('it')">IT</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero" style="background-image: url('images/hero-beach.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <img src="images/lido-logo-circle.png" alt="Logo Lido Le Capannine" class="hero-logo" />
+      <h1 class="hero-title">Lido Le Capannine</h1>
+      <p class="hero-subtitle" data-it="+ che un lido, una tribù" data-en="+ than a beach club, a tribe">+ che un lido, una tribù</p>
+      <p class="hero-desc" data-it="Ordina dal tuo posto · Bar &amp; Ristorante" data-en="Order from your spot · Bar &amp; Restaurant">Ordina dal tuo posto · Bar &amp; Ristorante</p>
+      <a href="menu.html?location=umbrella-1" class="btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+        <span data-it="Apri il Menu" data-en="Open the Menu">Apri il Menu</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a href="admin.html" class="btn-dark">
+        <span data-it="Pannello Gestione" data-en="Management Panel">Pannello Gestione</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+
+    <!-- Info Cards -->
+    <div class="info-cards">
+      <div class="info-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div>
+          <div class="info-card-title" data-it="Orari" data-en="Hours">Orari</div>
+          <div class="info-card-sub" data-it="Tutti i giorni" data-en="Every day">Tutti i giorni</div>
+          <div class="info-card-highlight">08:00 – 01:00</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <div>
+          <div class="info-card-title" data-it="Pagamenti" data-en="Payments">Pagamenti</div>
+          <div class="payment-tags">
+            <span class="tag">💵 Cash</span>
+            <span class="tag">💳 Card</span>
+            <span class="tag">Apple Pay</span>
+            <span class="tag">Google Pay</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Come funziona -->
+    <h2 class="section-title" data-it="Come funziona" data-en="How it works">Come funziona</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+        <div class="how-card-title" data-it="Scansiona il QR" data-en="Scan the QR">Scansiona il QR</div>
+        <div class="how-card-desc" data-it="Ogni ombrellone e tavolo ha il suo codice unico" data-en="Every umbrella and table has its unique code">Ogni ombrellone e tavolo ha il suo codice unico</div>
+      </div>
+      <div class="how-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+        <div class="how-card-title" data-it="Scegli dal menu" data-en="Browse the menu">Scegli dal menu</div>
+        <div class="how-card-desc" data-it="Antipasti, pizza, pesce e bevande dal tuo telefono" data-en="Starters, pizza, fish and drinks from your phone">Antipasti, pizza, pesce e bevande dal tuo telefono</div>
+      </div>
+      <div class="how-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <div class="how-card-title" data-it="Ordina in un click" data-en="Order in one click">Ordina in un click</div>
+        <div class="how-card-desc" data-it="Carrello, note e conferma in pochi secondi" data-en="Cart, notes and confirmation in seconds">Carrello, note e conferma in pochi secondi</div>
+      </div>
+      <div class="how-card">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <div class="how-card-title" data-it="Paga come vuoi" data-en="Pay your way">Paga come vuoi</div>
+        <div class="how-card-desc" data-it="Contanti, carta, Apple Pay o Google Pay" data-en="Cash, card, Apple Pay or Google Pay">Contanti, carta, Apple Pay o Google Pay</div>
+      </div>
+    </div>
+
+    <!-- Il nostro menu -->
+    <h2 class="section-title" data-it="Il nostro menu" data-en="Our menu">Il nostro menu</h2>
+    <div class="menu-preview-grid">
+      <a href="menu.html?location=umbrella-1&cat=antipasti" class="menu-preview-card">
+        <img src="images/antipasti.webp" alt="Antipasti" loading="lazy" />
+        <span data-it="Antipasti" data-en="Starters">Antipasti</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=pizze" class="menu-preview-card">
+        <img src="images/pizza.webp" alt="Pizze" loading="lazy" />
+        <span data-it="Pizze" data-en="Pizzas">Pizze</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=vini" class="menu-preview-card">
+        <img src="images/vini.webp" alt="Vini" loading="lazy" />
+        <span data-it="Vini" data-en="Wines">Vini</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=secondi" class="menu-preview-card">
+        <img src="images/secondi.webp" alt="Secondi" loading="lazy" />
+        <span data-it="Secondi" data-en="Mains">Secondi</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=bibite" class="menu-preview-card">
+        <img src="images/bibite.webp" alt="Bibite" loading="lazy" />
+        <span data-it="Bibite" data-en="Drinks">Bibite</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=primi" class="menu-preview-card">
+        <img src="images/primi.webp" alt="Primi" loading="lazy" />
+        <span data-it="Primi" data-en="First courses">Primi</span>
+      </a>
+    </div>
+
+    <!-- Recensioni -->
+    <h2 class="section-title" data-it="Cosa dicono di noi" data-en="What they say about us">Cosa dicono di noi</h2>
+    <div class="reviews-header">
+      <span class="stars">★★★★★</span>
+      <span class="review-score">5.0</span>
+      <span class="review-source" data-it="su Google Reviews" data-en="on Google Reviews">su Google Reviews</span>
+    </div>
+    <div class="reviews-list">
+      <div class="review-card">
+        <div class="review-avatar" style="background:#F28C00">A</div>
+        <div class="review-body">
+          <div class="review-name">ASD Magicabula</div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">"Bella gente, cordialità e simpatia... la pizza è il top, ingredienti genuini e forno a legna... ottimo lido, spiaggia e mare da vivere assolutamente!"</div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-avatar" style="background:#E07B00">K</div>
+        <div class="review-body">
+          <div class="review-name">Kateřina Švarcová</div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">"Consiglio la pasta ai frutti di mare, è deliziosa, l'ho già mangiata 2 volte 😍 e il personale è davvero gentile e simpatico."</div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-avatar" style="background:#F28C00">A</div>
+        <div class="review-body">
+          <div class="review-name">Alessandro Fabbricatore</div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">"Lido Le Capannine è casa! Punto di riferimento per le vacanze al Salice."</div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-avatar" style="background:#C96E00">S</div>
+        <div class="review-body">
+          <div class="review-name">Stefania Uva</div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">"Spiaggia pulitissima grazie al bagnino presente dalle 7 del mattino. Personale cordiale e attenzione per i più piccoli. Super consigliato!"</div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-avatar" style="background:#F28C00">P</div>
+        <div class="review-body">
+          <div class="review-name">Prospero Sassone</div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">"Lido ben fornito e attrezzato, molto bello e curato, staff estremamente cordiale e gentile. Super consigliato!!"</div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-avatar" style="background:#E07B00">G</div>
+        <div class="review-body">
+          <div class="review-name">Gennaro Marchianò</div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">"Linguine alle vongole fantastiche! Servizio gentile e veloce, mare stupendo e anche i giochi per i bambini! Consigliatissimo!"</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <!-- Footer -->
+  <footer class="footer">
+    <img src="images/lido-logo-circle.png" alt="Logo" class="footer-logo" />
+    <div class="footer-name">Lido Le Capannine</div>
+    <div class="footer-sub" data-it="+ che un lido, una tribù" data-en="+ than a beach club, a tribe">+ che un lido, una tribù</div>
+    <div class="footer-desc" data-it="Servizio di ordinazione digitale · Tutti i giorni 08:00–01:00" data-en="Digital ordering service · Every day 08:00–01:00">Servizio di ordinazione digitale · Tutti i giorni 08:00–01:00</div>
+  </footer>
+
+  <script src="js/lang.js"></script>
+  <script>
+    // Legge il parametro ?location= dal QR e aggiorna il pulsante "Apri il Menu"
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var loc = params.get('location');
+      if (loc) {
+        // Aggiorna il link del pulsante principale
+        var btn = document.querySelector('a.btn-primary');
+        if (btn) btn.href = 'menu.html?location=' + encodeURIComponent(loc);
+        // Mostra un banner con la posizione rilevata
+        var hero = document.querySelector('.hero-content');
+        if (hero) {
+          var label = loc.startsWith('umbrella-') ? '☂️ Ombrellone ' + loc.replace('umbrella-','') :
+                      loc.startsWith('table-')    ? '🪑 Tavolo '    + loc.replace('table-','') :
+                      '🍹 Bar';
+          var banner = document.createElement('div');
+          banner.style.cssText = 'background:rgba(242,140,0,0.18);border:1.5px solid rgba(242,140,0,0.5);border-radius:12px;padding:8px 16px;margin-bottom:14px;font-size:13px;font-weight:700;color:#FFD580;letter-spacing:0.02em;';
+          banner.textContent = '📍 ' + label;
+          hero.insertBefore(banner, hero.querySelector('.btn-primary'));
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
