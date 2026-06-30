@@ -11,8 +11,8 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="menu-header">
+  <!-- Header (sticky, visibile su tutti i breakpoint) -->
+  <div class="menu-header" id="menuHeader">
     <button class="menu-back-btn" onclick="history.back()">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     </button>
@@ -35,16 +35,32 @@
     </div>
   </div>
 
-  <!-- Search -->
-  <div class="search-bar">
+  <!-- Search bar (mobile + tablet) -->
+  <div class="search-bar" id="searchBarMobile">
     <input type="text" class="search-input" id="searchInput" placeholder="Cerca nel menu..." oninput="filterProducts()" />
   </div>
 
-  <!-- Categories -->
+  <!-- Categories bar (mobile + tablet scroll orizzontale) -->
   <div class="categories-bar" id="categoriesBar"></div>
 
-  <!-- Menu List -->
-  <div class="menu-list" id="menuList"></div>
+  <!-- Layout desktop: sidebar + contenuto principale -->
+  <div class="menu-page-desktop" id="menuPageDesktop">
+
+    <!-- Sidebar categorie (visibile solo su desktop via CSS) -->
+    <div class="menu-sidebar" id="menuSidebar">
+      <div style="padding:12px 20px 8px;font-size:11px;font-weight:700;color:#aaa;letter-spacing:0.08em;text-transform:uppercase;">Categorie</div>
+      <div id="sidebarCategories"></div>
+      <div style="padding:16px 20px 0;border-top:1px solid #f0e8d8;margin-top:12px;">
+        <input type="text" class="search-input" id="searchInputDesktop" placeholder="Cerca..." oninput="filterProductsDesktop()" style="font-size:13px;padding:8px 12px;" />
+      </div>
+    </div>
+
+    <!-- Contenuto principale menu -->
+    <div class="menu-main-content" id="menuMainContent">
+      <div class="menu-list" id="menuList"></div>
+    </div>
+
+  </div>
 
   <!-- Cart Modal -->
   <div class="modal-overlay" id="cartModal" onclick="closeCartOutside(event)">
@@ -67,8 +83,48 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
+  <script src="js/supabase.js"></script>
   <script src="js/data.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/lang.js"></script>
+
+  <script>
+    // Sidebar desktop: sincronizza con categoriesBar
+    function renderSidebarCategories() {
+      const sidebar = document.getElementById('sidebarCategories');
+      if (!sidebar || !menuCategories.length) return;
+      const allLabel = currentLang === 'it' ? 'Tutti' : 'All';
+      let html = `<button class="cat-btn ${currentCategory === 'all' ? 'active' : ''}" onclick="selectCategory('all')">${allLabel}</button>`;
+      menuCategories.forEach(cat => {
+        const name = currentLang === 'it' ? cat.name_it : cat.name_en;
+        html += `<button class="cat-btn ${currentCategory === cat.id ? 'active' : ''}" onclick="selectCategory('${cat.id}')">${cat.icon || ''} ${name}</button>`;
+      });
+      sidebar.innerHTML = html;
+    }
+
+    function filterProductsDesktop() {
+      const term = document.getElementById('searchInputDesktop').value;
+      document.getElementById('searchInput').value = term;
+      renderProducts(term);
+    }
+
+    // Aggiorna sidebar dopo ogni render categorie (senza override che causa loop)
+    document.addEventListener('categoriesRendered', renderSidebarCategories);
+
+    // Aggiusta altezza menu-page-desktop in base all'header
+    function adjustDesktopLayout() {
+      const header = document.getElementById('menuHeader');
+      const desktop = document.getElementById('menuPageDesktop');
+      if (header && desktop) {
+        const h = header.offsetHeight;
+        desktop.style.marginTop = '0';
+        // Sidebar sticky top
+        const sidebar = document.getElementById('menuSidebar');
+        if (sidebar) sidebar.style.top = h + 'px';
+      }
+    }
+    window.addEventListener('resize', adjustDesktopLayout);
+    document.addEventListener('DOMContentLoaded', () => setTimeout(adjustDesktopLayout, 200));
+  </script>
 </body>
 </html>

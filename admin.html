@@ -24,12 +24,12 @@
       <div class="admin-field">
         <label>PASSWORD</label>
         <div style="position:relative;">
-          <input type="password" class="admin-input" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
-          <button onclick="togglePwd()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:18px;">👁</button>
+          <input type="password" class="admin-input" id="loginPass" placeholder="••••••••" autocomplete="current-password" />
+          <button id="togglePwdBtn" type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:18px;">👁</button>
         </div>
       </div>
-      <div class="admin-error" id="loginError">Credenziali non valide</div>
-      <button class="btn-admin-login" onclick="doLogin()">
+      <div class="admin-error" id="loginError" style="display:none;">Credenziali non valide</div>
+      <button class="btn-admin-login" id="loginBtn" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         Accedi
       </button>
@@ -38,32 +38,47 @@
   </div>
 
   <!-- DASHBOARD -->
-  <div class="admin-dashboard" id="dashboardPage">
+  <div class="admin-dashboard" id="dashboardPage" style="display:none;">
+
+    <!-- Top bar -->
     <div class="admin-topbar">
       <div style="display:flex;align-items:center;gap:10px;">
         <img src="images/lido-logo-circle.png" alt="Logo" style="width:32px;height:32px;border-radius:50%;" />
         <span class="admin-topbar-title">Le Capannine — Gestione</span>
+        <span id="realtimeDot" style="display:inline-block;width:8px;height:8px;background:#28a745;border-radius:50%;margin-left:4px;vertical-align:middle;" title="Aggiornamento automatico ogni 10s"></span>
       </div>
-      <button class="admin-logout-btn" onclick="doLogout()">Esci</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button id="refreshBtn" type="button" style="background:rgba(255,255,255,0.1);border:none;border-radius:8px;padding:6px 12px;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;color:#fff;">🔄 Aggiorna</button>
+        <button class="admin-logout-btn" id="logoutBtn" type="button">Esci</button>
+      </div>
     </div>
 
     <div class="admin-content">
+
       <!-- Stats -->
       <div class="admin-stats" id="adminStats"></div>
 
       <!-- Tabs -->
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
-        <button class="cat-btn active" id="tabOrders" onclick="showTab('orders')">📋 Ordini</button>
-        <button class="cat-btn" id="tabProducts" onclick="showTab('products')">🍽️ Prodotti</button>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="cat-btn active" id="tabOrders" type="button">📋 Ordini</button>
+        <button class="cat-btn" id="tabProducts" type="button">🍽️ Prodotti</button>
+        <button class="cat-btn" id="tabQR" type="button">📱 QR Code</button>
       </div>
 
       <!-- Orders Tab -->
       <div id="tabOrdersContent">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
           <div class="admin-section-title">Ordini ricevuti</div>
-          <button onclick="clearOrders()" style="background:none;border:1px solid #ddd;border-radius:8px;padding:5px 12px;font-family:'Sora',sans-serif;font-size:12px;cursor:pointer;color:#888;">Svuota</button>
         </div>
-        <div id="ordersList"></div>
+        <!-- Filtri stato -->
+        <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;">
+          <button class="filter-btn cat-btn active" data-filter="all" type="button">Tutti</button>
+          <button class="filter-btn cat-btn" data-filter="pending" type="button">⏳ In attesa</button>
+          <button class="filter-btn cat-btn" data-filter="preparing" type="button">👨‍🍳 Preparazione</button>
+          <button class="filter-btn cat-btn" data-filter="ready" type="button">✅ Pronti</button>
+          <button class="filter-btn cat-btn" data-filter="delivered" type="button">🚀 Consegnati</button>
+        </div>
+        <div class="orders-grid" id="ordersList"></div>
       </div>
 
       <!-- Products Tab -->
@@ -71,13 +86,453 @@
         <div class="admin-section-title">Prodotti del menu</div>
         <div id="productsList"></div>
       </div>
+
+      <!-- QR Code Tab -->
+      <div id="tabQRContent" style="display:none;">
+        <div class="admin-section-title">📱 QR Code per ombrelloni e tavoli</div>
+        <p style="color:#666;font-size:14px;margin-bottom:20px;">Ogni QR code porta il cliente direttamente al menu con la posizione già selezionata. Stampali e plastificali da attaccare agli ombrelloni e ai tavoli.</p>
+
+        <!-- Pulsante stampa tutti -->
+        <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
+          <button class="btn-admin-login" id="printAllQR" type="button" style="padding:10px 20px;font-size:14px;width:auto;">🖨️ Stampa tutti i QR</button>
+          <button class="cat-btn active" id="qrFilterAll" data-qrfilter="all" type="button">Tutti</button>
+          <button class="cat-btn" id="qrFilterUmbrella" data-qrfilter="umbrella" type="button">☂️ Ombrelloni</button>
+          <button class="cat-btn" id="qrFilterTable" data-qrfilter="table" type="button">🪑 Tavoli</button>
+          <button class="cat-btn" id="qrFilterBar" data-qrfilter="bar" type="button">🍹 Bar</button>
+        </div>
+
+        <div class="qr-grid" id="qrGrid"></div>
+      </div>
+
     </div>
   </div>
 
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <script src="js/data.js"></script>
-  <script src="js/admin.js"></script>
+  <script>
+  // =============================================
+  // ADMIN PANEL — Lido Le Capannine
+  // Tutto inline per massima compatibilità
+  // =============================================
+  var SUPABASE_URL   = 'https://mnvzkozuufhgquexhgqb.supabase.co';
+  var SERVICE_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1udnprb3p1dWZoZ3F1ZXhoZ3FiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4Mjc2ODc3NywiZXhwIjoyMDk4MzQ0Nzc3fQ.dx3Vdyg8DbRreUUq-5sZGt-xiNzOUtK5P_hBim1Mux0';
+  var ADMIN_PASSWORD = 'capannine2024';
+
+  var adminOrders = [];
+  var pollingInterval = null;
+  var knownOrderIds = new Set();
+  var currentFilter = null;
+
+  // ===== SUPABASE HELPER =====
+  async function sbFetch(path, opts) {
+    opts = opts || {};
+    var res = await fetch(SUPABASE_URL + '/rest/v1' + path, Object.assign({}, opts, {
+      headers: Object.assign({
+        'apikey': SERVICE_KEY,
+        'Authorization': 'Bearer ' + SERVICE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': opts.prefer !== undefined ? opts.prefer : 'return=representation'
+      }, opts.headers || {})
+    }));
+    var text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  // ===== LOGIN =====
+  function doLogin() {
+    var user = document.getElementById('loginUser').value.trim();
+    var pass = document.getElementById('loginPass').value;
+    var err  = document.getElementById('loginError');
+    var btn  = document.getElementById('loginBtn');
+
+    err.style.display = 'none';
+    if (!user || !pass) {
+      err.style.display = 'block';
+      err.textContent = 'Inserisci username e password';
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Accesso...';
+
+    if (user === 'admin' && pass === ADMIN_PASSWORD) {
+      sessionStorage.setItem('adminAuth', '1');
+      showDashboard();
+    } else {
+      err.style.display = 'block';
+      err.textContent = 'Credenziali non valide';
+      btn.disabled = false;
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Accedi';
+    }
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('adminAuth');
+    stopPolling();
+    document.getElementById('dashboardPage').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginUser').value = '';
+  }
+
+  function togglePwd() {
+    var i = document.getElementById('loginPass');
+    i.type = i.type === 'password' ? 'text' : 'password';
+  }
+
+  // ===== DASHBOARD =====
+  async function showDashboard() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'block';
+    requestNotificationPermission();
+    await refreshOrders();
+    startPolling();
+  }
+
+  // ===== CARICA ORDINI =====
+  async function loadOrdersFromDB() {
+    return await sbFetch('/orders?order=created_at.desc', { prefer: '' });
+  }
+
+  async function refreshOrders() {
+    try {
+      var orders = await loadOrdersFromDB();
+      adminOrders = orders || [];
+      knownOrderIds = new Set(adminOrders.map(function(o) { return o.id; }));
+      renderStats();
+      renderOrders(currentFilter);
+      setDot(true);
+    } catch(e) {
+      setDot(false);
+      console.error('Errore caricamento ordini:', e);
+    }
+  }
+
+  // ===== POLLING ogni 10 secondi =====
+  function startPolling() {
+    stopPolling();
+    setDot(true);
+    pollingInterval = setInterval(async function() {
+      try {
+        var fresh = await loadOrdersFromDB();
+        if (!fresh) return;
+        // Notifica nuovi ordini
+        fresh.filter(function(o) { return !knownOrderIds.has(o.id); }).forEach(function(o) {
+          var loc = (o.location_id || '').replace('umbrella-', 'Ombrellone ').replace('table-', 'Tavolo ');
+          playNotificationSound();
+          sendNotification('🔔 Nuovo ordine!', loc + ' — €' + Number(o.total).toFixed(2));
+          flashCard(o.id);
+        });
+        adminOrders = fresh;
+        knownOrderIds = new Set(fresh.map(function(o) { return o.id; }));
+        renderStats();
+        renderOrders(currentFilter);
+        setDot(true);
+      } catch(e) { setDot(false); }
+    }, 10000);
+  }
+
+  function stopPolling() {
+    if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+  }
+
+  function setDot(active) {
+    var dot = document.getElementById('realtimeDot');
+    if (!dot) return;
+    dot.style.background = active ? '#28a745' : '#dc3545';
+    dot.title = active ? '● Aggiornamento automatico ogni 10s' : '● Connessione persa';
+  }
+
+  function flashCard(id) {
+    setTimeout(function() {
+      var card = document.getElementById('order-' + id);
+      if (card) {
+        card.style.border = '2px solid #e8a000';
+        card.style.boxShadow = '0 0 20px rgba(232,160,0,0.4)';
+        setTimeout(function() { card.style.border = ''; card.style.boxShadow = ''; }, 3000);
+      }
+    }, 200);
+  }
+
+  // ===== AGGIORNA STATO =====
+  async function changeStatus(orderId, newStatus) {
+    try {
+      await sbFetch('/orders?id=eq.' + orderId, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus }),
+        prefer: 'return=minimal'
+      });
+      var idx = adminOrders.findIndex(function(o) { return o.id === orderId; });
+      if (idx !== -1) { adminOrders[idx].status = newStatus; renderStats(); renderOrders(currentFilter); }
+      showToast('Stato aggiornato!', 'success');
+    } catch(e) {
+      showToast('Errore aggiornamento stato. Riprova.', 'error');
+    }
+  }
+
+  // ===== NOTIFICHE =====
+  function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }
+
+  function sendNotification(title, body) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(title, { body: body, icon: 'images/lido-logo-circle.png' });
+    }
+  }
+
+  function playNotificationSound() {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.4);
+    } catch(e) {}
+  }
+
+  // ===== STATS =====
+  function renderStats() {
+    var pending   = adminOrders.filter(function(o) { return o.status === 'pending'; }).length;
+    var preparing = adminOrders.filter(function(o) { return o.status === 'preparing'; }).length;
+    var ready     = adminOrders.filter(function(o) { return o.status === 'ready'; }).length;
+    var today     = adminOrders.filter(function(o) { return new Date(o.created_at).toDateString() === new Date().toDateString(); });
+    var income    = today.reduce(function(s, o) { return s + Number(o.total || 0); }, 0);
+    var el = document.getElementById('adminStats');
+    if (!el) return;
+    el.innerHTML =
+      '<div class="stat-card"><div class="stat-num">' + adminOrders.length + '</div><div class="stat-label">Ordini totali</div></div>' +
+      '<div class="stat-card"><div class="stat-num" style="color:#856404">' + pending + '</div><div class="stat-label">In attesa</div></div>' +
+      '<div class="stat-card"><div class="stat-num" style="color:#0c5460">' + preparing + '</div><div class="stat-label">In preparazione</div></div>' +
+      '<div class="stat-card"><div class="stat-num" style="color:#155724">' + ready + '</div><div class="stat-label">Pronti</div></div>' +
+      '<div class="stat-card"><div class="stat-num">€' + income.toFixed(0) + '</div><div class="stat-label">Incasso oggi (' + today.length + ')</div></div>';
+  }
+
+  // ===== RENDER ORDINI =====
+  function renderOrders(filter) {
+    var list = document.getElementById('ordersList');
+    if (!list) return;
+    var orders = filter ? adminOrders.filter(function(o) { return o.status === filter; }) : adminOrders;
+    if (orders.length === 0) {
+      list.innerHTML = '<div class="no-orders">Nessun ordine. In attesa...</div>';
+      return;
+    }
+    var ordMap = { pending: 0, preparing: 1, ready: 2, delivered: 3, cancelled: 4 };
+    var sorted = orders.slice().sort(function(a, b) {
+      var d = ((ordMap[a.status] !== undefined ? ordMap[a.status] : 5) - (ordMap[b.status] !== undefined ? ordMap[b.status] : 5));
+      return d !== 0 ? d : new Date(b.created_at) - new Date(a.created_at);
+    });
+    list.innerHTML = sorted.map(renderOrderCard).join('');
+  }
+
+  function renderOrderCard(order) {
+    var statusMap = {
+      pending:   { label: '⏳ In attesa',       cls: 'status-pending' },
+      preparing: { label: '👨‍🍳 In preparazione', cls: 'status-preparing' },
+      ready:     { label: '✅ Pronto',           cls: 'status-ready' },
+      delivered: { label: '🚀 Consegnato',       cls: 'status-delivered' },
+      cancelled: { label: '❌ Annullato',        cls: 'status-cancelled' }
+    };
+    var s    = statusMap[order.status] || statusMap.pending;
+    var time = new Date(order.created_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    var date = new Date(order.created_at).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
+    var items = (Array.isArray(order.items) ? order.items : []).map(function(i) {
+      return '<div class="order-item-row"><span>' + i.qty + 'x ' + (i.name_it || i.name) + '</span><span>€' + Number(i.subtotal || i.price * i.qty).toFixed(2) + '</span></div>';
+    }).join('');
+    var loc = (order.location_id || '').replace('umbrella-', 'Ombrellone ').replace('table-', 'Tavolo ');
+    var nextBtn = '';
+    if (order.status === 'pending')   nextBtn = '<button class="btn-status btn-preparing" onclick="changeStatus(\'' + order.id + '\',\'preparing\')">👨‍🍳 Inizia preparazione</button>';
+    if (order.status === 'preparing') nextBtn = '<button class="btn-status btn-ready" onclick="changeStatus(\'' + order.id + '\',\'ready\')">✅ Pronto</button>';
+    if (order.status === 'ready')     nextBtn = '<button class="btn-status btn-delivered" onclick="changeStatus(\'' + order.id + '\',\'delivered\')">🚀 Consegnato</button>';
+    var cancelBtn = (['delivered','cancelled'].indexOf(order.status) === -1)
+      ? '<button class="btn-status btn-cancel" onclick="changeStatus(\'' + order.id + '\',\'cancelled\')">❌ Annulla</button>' : '';
+    var notesHtml = order.notes ? '<div class="order-notes">📝 ' + order.notes + '</div>' : '';
+    return '<div class="order-card ' + s.cls + '" id="order-' + order.id + '">' +
+      '<div class="order-header">' +
+        '<div><strong>' + loc + '</strong><span class="order-time">' + date + ' ' + time + '</span></div>' +
+        '<span class="order-status ' + s.cls + '">' + s.label + '</span>' +
+      '</div>' +
+      '<div class="order-items">' + items + '</div>' +
+      notesHtml +
+      '<div class="order-total">Totale: <strong>€' + Number(order.total).toFixed(2) + '</strong></div>' +
+      '<div class="order-actions">' + nextBtn + cancelBtn + '</div>' +
+    '</div>';
+  }
+
+  // ===== FILTRI =====
+  function filterOrders(status, btn) {
+    currentFilter = (status === 'all') ? null : status;
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    renderOrders(currentFilter);
+  }
+
+  // ===== TABS =====
+  function showTab(tab) {
+    document.getElementById('tabOrdersContent').style.display   = tab === 'orders'   ? '' : 'none';
+    document.getElementById('tabProductsContent').style.display  = tab === 'products' ? '' : 'none';
+    document.getElementById('tabQRContent').style.display        = tab === 'qr'       ? '' : 'none';
+    document.getElementById('tabOrders').classList.toggle('active',   tab === 'orders');
+    document.getElementById('tabProducts').classList.toggle('active', tab === 'products');
+    document.getElementById('tabQR').classList.toggle('active',       tab === 'qr');
+    if (tab === 'qr') renderQRGrid('all');
+  }
+
+  // ===== REFRESH MANUALE =====
+  async function manualRefresh() {
+    var btn = document.getElementById('refreshBtn');
+    if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
+    await refreshOrders();
+    if (btn) { btn.textContent = '🔄 Aggiorna'; btn.disabled = false; }
+  }
+
+  // ===== QR CODE =====
+  var SITE_URL = 'https://chic-churros-27086d.netlify.app';
+  var QR_LOCATIONS = [];
+  (function() {
+    for (var i = 1; i <= 186; i++) QR_LOCATIONS.push({ id: 'umbrella-' + i, label: 'Ombrellone ' + i, icon: '☂️', type: 'umbrella' });
+    for (var i = 1; i <= 6; i++)  QR_LOCATIONS.push({ id: 'table-' + i,    label: 'Tavolo ' + i,    icon: '🪑', type: 'table' });
+    QR_LOCATIONS.push({ id: 'bar', label: 'Bar', icon: '🍹', type: 'bar' });
+  })();
+
+  function renderQRGrid(filter) {
+    var grid = document.getElementById('qrGrid');
+    if (!grid) return;
+    var locs = (filter && filter !== 'all') ? QR_LOCATIONS.filter(function(l) { return l.type === filter; }) : QR_LOCATIONS;
+    grid.innerHTML = locs.map(function(loc) {
+      var url = SITE_URL + '/?location=' + loc.id;
+      var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(url) + '&color=3d2a1e&bgcolor=fff8f0&margin=10';
+      return '<div class="qr-card" id="qrcard-' + loc.id + '">' +
+        '<div class="qr-icon">' + loc.icon + '</div>' +
+        '<div class="qr-label">' + loc.label + '</div>' +
+        '<img class="qr-img" src="' + qrUrl + '" alt="QR ' + loc.label + '" loading="lazy" />' +
+        '<div class="qr-url">' + url + '</div>' +
+        '<div class="qr-actions">' +
+          '<button class="btn-status btn-preparing" onclick="downloadQR(\'' + loc.id + '\',\'' + loc.label + '\')" type="button">⬇️ Scarica</button>' +
+          '<button class="btn-status btn-ready" onclick="printQR(\'' + loc.id + '\',\'' + loc.label + '\')" type="button">🖨️ Stampa</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function downloadQR(locId, label) {
+    var url = SITE_URL + '/?location=' + locId;
+    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(url) + '&color=3d2a1e&bgcolor=fff8f0&margin=15';
+    var a = document.createElement('a');
+    a.href = qrUrl;
+    a.download = 'QR-' + label.replace(/\s+/g, '-') + '.png';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function printQR(locId, label) {
+    var url = SITE_URL + '/?location=' + locId;
+    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(url) + '&color=3d2a1e&bgcolor=fff8f0&margin=15';
+    var win = window.open('', '_blank', 'width=500,height=650');
+    win.document.write('<!DOCTYPE html><html><head><title>QR ' + label + '</title>');
+    win.document.write('<style>body{font-family:Arial,sans-serif;text-align:center;padding:40px;background:#fff8f0;}h2{color:#3d2a1e;font-size:26px;margin-bottom:6px;}p{color:#666;font-size:14px;margin-bottom:24px;}img{border:3px solid #e8a000;border-radius:12px;padding:12px;background:#fff;}small{display:block;margin-top:16px;color:#aaa;font-size:10px;word-break:break-all;}.btn{margin-top:20px;padding:10px 24px;background:#e8a000;border:none;border-radius:8px;font-size:15px;cursor:pointer;}@media print{.btn{display:none;}}</style>');
+    win.document.write('</head><body>');
+    win.document.write('<h2>🏖️ Lido Le Capannine</h2>');
+    win.document.write('<p>' + loc.icon + ' ' + label + ' — Scansiona per ordinare</p>'.replace('loc.icon', ''));
+    win.document.write('<img src="' + qrUrl + '" width="300" height="300" />');
+    win.document.write('<small>' + url + '</small>');
+    win.document.write('<br><button class="btn" onclick="window.print()">🖨️ Stampa</button>');
+    win.document.write('</body></html>');
+    win.document.close();
+    win.focus();
+  }
+
+  function printAllQR() {
+    var win = window.open('', '_blank', 'width=1000,height=800');
+    win.document.write('<!DOCTYPE html><html><head><title>QR Code — Lido Le Capannine</title>');
+    win.document.write('<style>body{font-family:Arial,sans-serif;background:#fff8f0;padding:24px;}h1{text-align:center;color:#3d2a1e;margin-bottom:30px;font-size:22px;}');
+    win.document.write('.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}');
+    win.document.write('@media print{.grid{grid-template-columns:repeat(4,1fr);gap:12px;}.no-print{display:none!important;}}');
+    win.document.write('.card{background:#fff;border:2px solid #e8a000;border-radius:12px;padding:14px;text-align:center;page-break-inside:avoid;}');
+    win.document.write('.icon{font-size:24px;margin-bottom:4px;}.label{font-weight:bold;color:#3d2a1e;font-size:14px;margin-bottom:8px;}');
+    win.document.write('img{border-radius:6px;}.url{font-size:8px;color:#bbb;margin-top:6px;word-break:break-all;}');
+    win.document.write('.no-print{text-align:center;margin-bottom:20px;}');
+    win.document.write('</style></head><body>');
+    win.document.write('<h1>🏖️ Lido Le Capannine — QR Code Ombrelloni e Tavoli</h1>');
+    win.document.write('<div class="no-print"><button onclick="window.print()" style="padding:10px 28px;background:#e8a000;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:bold;">🖨️ Stampa tutti</button></div>');
+    win.document.write('<div class="grid">');
+    QR_LOCATIONS.forEach(function(loc) {
+      var url = SITE_URL + '/?location=' + loc.id;
+      var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(url) + '&color=3d2a1e&bgcolor=fff8f0&margin=8';
+      win.document.write('<div class="card"><div class="icon">' + loc.icon + '</div><div class="label">' + loc.label + '</div><img src="' + qrUrl + '" width="160" height="160" /><div class="url">' + url + '</div></div>');
+    });
+    win.document.write('</div></body></html>');
+    win.document.close();
+    win.focus();
+  }
+
+  // ===== TOAST =====
+  function showToast(msg, type) {
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.className = 'toast ' + (type || '');
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+  }
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', function() {
+    // Login button
+    document.getElementById('loginBtn').addEventListener('click', doLogin);
+
+    // Toggle password
+    document.getElementById('togglePwdBtn').addEventListener('click', togglePwd);
+
+    // Enter key su login
+    document.getElementById('loginPass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('loginUser').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', doLogout);
+
+    // Refresh
+    document.getElementById('refreshBtn').addEventListener('click', manualRefresh);
+
+    // Tabs
+    document.getElementById('tabOrders').addEventListener('click', function() { showTab('orders'); });
+    document.getElementById('tabProducts').addEventListener('click', function() { showTab('products'); });
+
+    // Filtri ordini
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { filterOrders(btn.dataset.filter, btn); });
+    });
+
+    // Tab QR
+    document.getElementById('tabQR').addEventListener('click', function() { showTab('qr'); });
+
+    // QR Filtri
+    document.querySelectorAll('[data-qrfilter]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('[data-qrfilter]').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        renderQRGrid(btn.dataset.qrfilter);
+      });
+    });
+
+    // Stampa tutti QR
+    document.getElementById('printAllQR').addEventListener('click', printAllQR);
+
+    // Auto-login se già autenticato
+    if (sessionStorage.getItem('adminAuth')) {
+      showDashboard();
+    }
+  });
+  </script>
 </body>
 </html>

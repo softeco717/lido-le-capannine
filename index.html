@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+
   <!-- Language switcher -->
   <div class="lang-switcher" id="langSwitcher">
     <button class="lang-btn active" onclick="setLang('it')">IT</button>
@@ -39,8 +40,10 @@
     </div>
   </div>
 
-  <!-- Info Cards -->
+  <!-- Main content -->
   <div class="container">
+
+    <!-- Info Cards -->
     <div class="info-cards">
       <div class="info-card">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -78,7 +81,7 @@
         <div class="how-card-desc" data-it="Antipasti, pizza, pesce e bevande dal tuo telefono" data-en="Starters, pizza, fish and drinks from your phone">Antipasti, pizza, pesce e bevande dal tuo telefono</div>
       </div>
       <div class="how-card">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><bolt/><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F28C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         <div class="how-card-title" data-it="Ordina in un click" data-en="Order in one click">Ordina in un click</div>
         <div class="how-card-desc" data-it="Carrello, note e conferma in pochi secondi" data-en="Cart, notes and confirmation in seconds">Carrello, note e conferma in pochi secondi</div>
       </div>
@@ -93,16 +96,28 @@
     <h2 class="section-title" data-it="Il nostro menu" data-en="Our menu">Il nostro menu</h2>
     <div class="menu-preview-grid">
       <a href="menu.html?location=umbrella-1&cat=antipasti" class="menu-preview-card">
-        <img src="images/antipasti.webp" alt="Antipasti" />
+        <img src="images/antipasti.webp" alt="Antipasti" loading="lazy" />
         <span data-it="Antipasti" data-en="Starters">Antipasti</span>
       </a>
       <a href="menu.html?location=umbrella-1&cat=pizze" class="menu-preview-card">
-        <img src="images/pizza.webp" alt="Pizze" />
+        <img src="images/pizza.webp" alt="Pizze" loading="lazy" />
         <span data-it="Pizze" data-en="Pizzas">Pizze</span>
       </a>
       <a href="menu.html?location=umbrella-1&cat=vini" class="menu-preview-card">
-        <img src="images/vini.webp" alt="Vini" />
+        <img src="images/vini.webp" alt="Vini" loading="lazy" />
         <span data-it="Vini" data-en="Wines">Vini</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=secondi" class="menu-preview-card">
+        <img src="images/secondi.webp" alt="Secondi" loading="lazy" />
+        <span data-it="Secondi" data-en="Mains">Secondi</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=bibite" class="menu-preview-card">
+        <img src="images/bibite.webp" alt="Bibite" loading="lazy" />
+        <span data-it="Bibite" data-en="Drinks">Bibite</span>
+      </a>
+      <a href="menu.html?location=umbrella-1&cat=primi" class="menu-preview-card">
+        <img src="images/primi.webp" alt="Primi" loading="lazy" />
+        <span data-it="Primi" data-en="First courses">Primi</span>
       </a>
     </div>
 
@@ -163,7 +178,8 @@
         </div>
       </div>
     </div>
-  </div>
+
+  </div><!-- /container -->
 
   <!-- Footer -->
   <footer class="footer">
@@ -174,5 +190,28 @@
   </footer>
 
   <script src="js/lang.js"></script>
+  <script>
+    // Legge il parametro ?location= dal QR e aggiorna il pulsante "Apri il Menu"
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var loc = params.get('location');
+      if (loc) {
+        // Aggiorna il link del pulsante principale
+        var btn = document.querySelector('a.btn-primary');
+        if (btn) btn.href = 'menu.html?location=' + encodeURIComponent(loc);
+        // Mostra un banner con la posizione rilevata
+        var hero = document.querySelector('.hero-content');
+        if (hero) {
+          var label = loc.startsWith('umbrella-') ? '☂️ Ombrellone ' + loc.replace('umbrella-','') :
+                      loc.startsWith('table-')    ? '🪑 Tavolo '    + loc.replace('table-','') :
+                      '🍹 Bar';
+          var banner = document.createElement('div');
+          banner.style.cssText = 'background:rgba(242,140,0,0.18);border:1.5px solid rgba(242,140,0,0.5);border-radius:12px;padding:8px 16px;margin-bottom:14px;font-size:13px;font-weight:700;color:#FFD580;letter-spacing:0.02em;';
+          banner.textContent = '📍 ' + label;
+          hero.insertBefore(banner, hero.querySelector('.btn-primary'));
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
